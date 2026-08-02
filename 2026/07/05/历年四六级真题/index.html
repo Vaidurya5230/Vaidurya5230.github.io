@@ -293,4 +293,141 @@
   } else {
     window.loadOtherComment = loadWaline
   }
-})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.5"></script></div></div></body></html>
+})()</script></div><style>
+  /* 让导航栏变成三栏布局：左标题 | 中搜索框 | 右菜单 */
+  #nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  #nav-left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+  }
+  #nav-center {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+  }
+  #nav-right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-search-wrapper {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 24px;
+    padding: 4px 12px 4px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all .3s;
+    width: 100%;
+    max-width: 320px;
+  }
+  .nav-search-wrapper:focus-within {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: var(--theme-color, #49b1f5);
+    box-shadow: 0 0 0 3px rgba(73, 177, 245, 0.10);
+  }
+  #nav-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--font-color);
+    padding: 5px 0;
+    width: 100%;
+    font-size: 14px;
+  }
+  #nav-search-input::placeholder {
+    color: var(--font-color);
+    opacity: .35;
+    font-size: 13px;
+  }
+  .nav-search-wrapper .search-icon-btn {
+    color: var(--font-color);
+    opacity: .4;
+    cursor: pointer;
+    padding: 4px 0 4px 10px;
+    transition: opacity .3s;
+    font-size: 14px;
+    border: none;
+    background: none;
+    flex-shrink: 0;
+  }
+  .nav-search-wrapper .search-icon-btn:hover {
+    opacity: 1;
+  }
+  @media screen and (max-width: 768px) {
+    #nav {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    #nav-left {
+      flex: 0 0 auto;
+    }
+    #nav-center {
+      flex: 1 1 100%;
+      order: 3;
+    }
+    #nav-right {
+      flex: 0 0 auto;
+    }
+    .nav-search-wrapper {
+      max-width: 100%;
+    }
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('#nav-center')) return;
+    
+    var nav = document.querySelector('#nav');
+    if (!nav) return;
+    
+    var navLeft = document.querySelector('#nav-left');
+    var navRight = document.querySelector('#nav-right');
+    
+    if (!navLeft || !navRight) return;
+    
+    var navCenter = document.createElement('div');
+    navCenter.id = 'nav-center';
+    
+    var searchWrapper = document.createElement('div');
+    searchWrapper.className = 'nav-search-wrapper';
+    searchWrapper.innerHTML = '<input id="nav-search-input" type="text" placeholder="搜索文章..." /><button class="search-icon-btn" onclick="handleNavSearch()"><i class="fas fa-search"></i></button>';
+    navCenter.appendChild(searchWrapper);
+    
+    nav.insertBefore(navCenter, navRight);
+    
+    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleNavSearch();
+    });
+  });
+  
+  function handleNavSearch() {
+    var keyword = document.getElementById('nav-search-input').value.trim();
+    if (!keyword) return;
+    
+    var searchBtn = document.querySelector('#search-button');
+    if (searchBtn) {
+      searchBtn.click();
+      setTimeout(function() {
+        var searchInput = document.querySelector('#local-search-input input, .search-input input, .algolia-search-input');
+        if (searchInput) {
+          searchInput.value = keyword;
+          searchInput.dispatchEvent(new Event('input'));
+        }
+      }, 400);
+    } else {
+      alert('请先在主题配置中开启 local_search 或 algolia_search');
+    }
+  }
+</script>
+<script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.5"></script></div></div></body></html>
